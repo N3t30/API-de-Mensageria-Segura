@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Aguardando Postgres..."
+while ! nc -z postgres_db 5432; do
+  sleep 1
+done
+
+echo "Postgres disponível, iniciando Django..."
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
