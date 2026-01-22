@@ -1,8 +1,9 @@
 # Criando um serializer que trabalha diretamente com o modelor User padrão do django
 
-
 from django.contrib.auth.models import User
 from rest_framework import serializers
+
+from .models import Message
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -22,6 +23,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError("Username já existe")
         return value
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = serializers.CharField(source="sender.username", read_only=True)
+    recipient = serializers.CharField(source="recipient.username", read_only=True)
+
+    class Meta:
+        model = Message
+        fields = [
+            "id",
+            "sender",
+            "recipient",
+            "content",
+            "created_at",
+        ]
 
 
 # Serializer básico, recebe dados de registro, valida tamananho da senha
