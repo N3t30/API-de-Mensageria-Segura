@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from rest_framework import generics
+from rest_framework import generics, status  # noqa f401
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,13 +26,6 @@ class LogoutView(APIView):
         return Response({"detail": "logout realizado com sucesso"})
 
 
-"""View para registro de novos usuários, só aceita POST, válida dados, não vaza senha
-usa hash e bloqueia usuarios já autenticaddos de se registrar"""
-
-
-''' Só quem participa vê com controle de acesso e Admin vê tudo'''
-
-
 class MessageListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -48,7 +41,7 @@ class MessageListView(APIView):
         return Response(serializer.data)
 
 
-class MessageDetailView9APIView(APIView):
+class MessageDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, message_id):
@@ -57,7 +50,6 @@ class MessageDetailView9APIView(APIView):
         except Message.DoesNotExist:
             return Response(status=404)
 
-        # regra de négocio
         is_participant = (
             message.sender == request.user or
             message.recipient == request.user
@@ -66,11 +58,19 @@ class MessageDetailView9APIView(APIView):
         if not is_participant and not request.user.is_staff:
             AuditLog.objects.create(
                 user=request.user,
-                action="ANAUTHORIZED-ACCESS",
+                action="UNAUTHORIZED_ACCESS",
                 target=f"message:{message.id}",
-                ip_address=request.META.get("REMOTE_ADDR")
             )
             return Response(status=403)
 
         serializer = MessageSerializer(message)
         return Response(serializer.data)
+
+
+class MessageCreateView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MessageSerializer
+    queryset = Message.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)

@@ -29,6 +29,12 @@ class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.CharField(source="sender.username", read_only=True)
     recipient = serializers.CharField(source="recipient.username", read_only=True)
 
+    # Aaqui somente para escrita, recebe ID
+    recipient = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        write_only=True
+    )
+
     class Meta:
         model = Message
         fields = [
@@ -38,6 +44,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "content",
             "created_at",
         ]
+        read_only_fields = ['sender', 'created_at']
 
 
 # Serializer básico, recebe dados de registro, valida tamananho da senha
