@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models  # noqa F401
+from messaging.utils.crypto import decrypt_message, encrypt_message
 
 
 class Message(models.Model):
@@ -7,6 +8,14 @@ class Message(models.Model):
     recipient = models.ForeignKey(User, related_name="received_messages", on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.content.startswith("gAAAA"):
+            self.content = encrypt_message(self.content)
+        super().save(*args, **kwargs)
+
+    def decrypted_content(self):
+        return decrypt_message(self.content)
 
 
 class AuditLog(models.Model):

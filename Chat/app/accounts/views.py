@@ -1,3 +1,6 @@
+import logging
+
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Q
 from rest_framework import generics, status  # noqa f401
@@ -8,6 +11,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import AuditLog, Message
 from .serializers import MessageSerializer, RegisterSerializer
+
+logger = logging.getLogger("django.security")
+
+
+class LoginView(APIView):
+    def post(self, request):
+        user = authenticate(...)
+        if not user:
+            logger.warning(
+                f"Falha de login | IP: {request.META.get('REMOTE_ADDR')} | user: {request.data.get('username')}"
+            )
 
 
 class RegisterView(generics.CreateAPIView):
