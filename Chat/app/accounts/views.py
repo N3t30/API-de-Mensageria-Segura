@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Q
+from ratelimit.decorators import ratelimit  # type: ignore
 from rest_framework import generics, status  # noqa f401
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -15,12 +16,16 @@ from .serializers import MessageSerializer, RegisterSerializer
 logger = logging.getLogger("django.security")
 
 
+@ratelimit(key="ip", rate="5/m", block=True)
 class LoginView(APIView):
     def post(self, request):
-        user = authenticate(...)
+        user = authenticate(
+            username=request.data.get("username"),
+            password=request.data.get("password")
+        )
         if not user:
             logger.warning(
-                f"Falha de login | IP: {request.META.get('REMOTE_ADDR')} | user: {request.data.get('username')}"
+                f"Falha de login | IP: {request.META.get('REMOTE_ADDR')} | user: {request.data.get('username')}"  # noqa E501
             )
 
 

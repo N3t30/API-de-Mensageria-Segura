@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     "app.accounts",
     "app.messaging",
+    "ratelimit",
 ]
 
 
@@ -65,7 +66,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
 
 ROOT_URLCONF = "app.core.urls"
 
