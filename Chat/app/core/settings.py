@@ -165,6 +165,12 @@ LOGGING = {
     },
 }
 
+CELERY_BEAT_SCHEDULE = {
+    "expire-messages-every-minute": {
+        "task": "messaging.tasks.expire_messages",
+        "schedule": 60.0,
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

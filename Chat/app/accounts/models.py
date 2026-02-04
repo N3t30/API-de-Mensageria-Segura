@@ -18,17 +18,25 @@ class Message(models.Model):
         if not self.content.startswith("gAAAA"):
             self.content = encrypt_message(self.content)
 
-            if self.ttl_seconds and not self.expires_at:
-             self.expires_at = self.created_at + timezone.timedelta(
+        if self.ttl_seconds and not self.expires_at:
+            self.expires_at = self.created_at + timezone.timedelta(
                 seconds=self.ttl_seconds
             )
-
+    
         super().save(*args, **kwargs)
-
-
 
     def decrypted_content(self):
         return decrypt_message(self.content)
+    
+class MessageEvent(models.Model):
+    message = models.ForeignKey(
+        Message, on_delete=models.CASCADE, related_name="events"
+    )
+    event_type = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.event_type} - message {self.message.id}"
 
 
 class AuditLog(models.Model):

@@ -1,3 +1,4 @@
+from datetime import timezone
 import logging
 
 from django.contrib.auth import authenticate
@@ -51,8 +52,13 @@ class MessageListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        base_filter  = Message.objects.filter(
+                is_expired=False,
+                expires_at__gt=timezone.now()
+                )
+        
         if request.user.is_staff:
-            messages = Message.objects.all()
+            messages = base_filter
         else:
             messages = Message.objects.filter(
                 Q(sender=request.user) | Q(recipient=request.user)
