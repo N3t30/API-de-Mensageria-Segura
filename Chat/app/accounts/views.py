@@ -16,7 +16,7 @@ from .serializers import MessageSerializer, RegisterSerializer
 logger = logging.getLogger("django.security")
 
 
-
+# Responsável por autenticar o usuário, aplicar rate limit e registrar tentativas de login inválidas
 class LoginView(APIView):
     
     @ratelimit(key="ip", rate="5/m", block=True)
@@ -30,13 +30,13 @@ class LoginView(APIView):
                 f"Falha de login | IP: {request.META.get('REMOTE_ADDR')} | user: {request.data.get('username')}"  # noqa E501
             )
 
-
+# Responsável por registrar novos usuários no sistema
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-
+# Responsável por invalidar o refresh token e encerrar a sessão do usuário autenticado
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -46,7 +46,7 @@ class LogoutView(APIView):
         token.blacklist()
         return Response({"detail": "logout realizado com sucesso"})
 
-
+# Responsável por listar mensagens do usuário ou todas as mensagens se for administrador
 class MessageListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -61,7 +61,7 @@ class MessageListView(APIView):
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
 
-
+# Responsável por retornar uma mensagem específica, validando permissão e registrando acessos não autorizados
 class MessageDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -87,7 +87,7 @@ class MessageDetailView(APIView):
         serializer = MessageSerializer(message)
         return Response(serializer.data)
 
-
+# Responsável por criar uma nova mensagem associando automaticamente o remetente ao usuário autenticado
 class MessageCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = MessageSerializer
