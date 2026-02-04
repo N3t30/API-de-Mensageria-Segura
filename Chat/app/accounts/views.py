@@ -3,8 +3,8 @@ import logging
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Q
-from ratelimit.decorators import ratelimit  # type: ignore
-from rest_framework import generics, status  # noqa f401
+from django_ratelimit.decorators import ratelimit
+from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,8 +16,10 @@ from .serializers import MessageSerializer, RegisterSerializer
 logger = logging.getLogger("django.security")
 
 
-@ratelimit(key="ip", rate="5/m", block=True)
+
 class LoginView(APIView):
+    
+    @ratelimit(key="ip", rate="5/m", block=True)
     def post(self, request):
         user = authenticate(
             username=request.data.get("username"),

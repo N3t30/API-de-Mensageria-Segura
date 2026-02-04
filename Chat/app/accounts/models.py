@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models  # noqa F401
-from messaging.utils.crypto import decrypt_message, encrypt_message
+from app.messaging.utils.crypto import decrypt_message, encrypt_message
 
 
 class Message(models.Model):

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Max
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -98,3 +99,4 @@ class TestHTTPStatus(APITestCase):
         response = self.client.get(f"/api/auth/messages/{self.message.id}/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+

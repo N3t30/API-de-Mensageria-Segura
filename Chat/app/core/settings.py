@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
     "app.accounts",
     "app.messaging",
-    "ratelimit",
+    'axes',
 ]
 
 
@@ -69,8 +69,17 @@ MIDDLEWARE = [
     "axes.middleware.AxesMiddleware",
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AXES_LOCK_OUT_AT_FAILURE = True
+AXES_COOLOFF_TIME = None
+AXES_RESET_ON_SUCCESS = False
+
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_RESPONSE = "axes.views.lockout"
 
 ROOT_URLCONF = "app.core.urls"
 
