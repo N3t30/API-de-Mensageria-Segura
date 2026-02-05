@@ -15,15 +15,16 @@ class Message(models.Model):
     is_expired = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.content.startswith("gAAAA"):
-            self.content = encrypt_message(self.content)
+        creating = self.pk is None 
+        super().save(*args, **kwargs)
 
-        if self.ttl_seconds and not self.expires_at:
-            self.expires_at = self.created_at + timezone.timedelta(
+        if creating and self.ttl_seconds and not self.expired_at:
+            self.expired_at = self.created_at + timezone.timedelta(
                 seconds=self.ttl_seconds
             )
-    
-        super().save(*args, **kwargs)
+            
+            super().save(update_fields=["expired_at"])
+
 
     def decrypted_content(self):
         return decrypt_message(self.content)

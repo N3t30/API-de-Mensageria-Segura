@@ -1,8 +1,10 @@
 from datetime import timezone
 import logging
 
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from urllib3 import requests 
 from django.db.models import Q
 from django_ratelimit.decorators import ratelimit
 from rest_framework import generics, status
@@ -60,7 +62,7 @@ class MessageListView(APIView):
         if request.user.is_staff:
             messages = base_filter
         else:
-            messages = Message.objects.filter(
+            messages = base_filter.filter(
                 Q(sender=request.user) | Q(recipient=request.user)
             )
 
@@ -73,7 +75,10 @@ class MessageDetailView(APIView):
 
     def get(self, request, message_id):
         try:
-            message = Message.objects.get(id=message_id)
+            message = Message.objects.get(
+                id=message_id,
+                is_expired=False
+            )
         except Message.DoesNotExist:
             return Response(status=404)
 
@@ -101,3 +106,19 @@ class MessageCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)
+
+# Responsável por criar uma nova mensagem, associando o remetente ao usuário autenticado e validando os dados de entrada
+class SendMessageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        Message.objects.create(
+            sender=request.user,
+            recipient_id=request.data["recipient"],
+            content=request.data["content"],
+            ttl_seconds=request.data["ttl_seconds"]
+        )
+        return Response(status=201)
+
+
+
