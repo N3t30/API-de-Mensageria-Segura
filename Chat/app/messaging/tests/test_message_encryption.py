@@ -1,11 +1,10 @@
 import os
 
 from django.contrib.auth.models import User
-from django.test import TestCase
-from rest_framework import Message
+from rest_framework.test import APITestCase
+from app.accounts.models import Message
 
-
-class MessageEncryptionTestCase(TestCase):
+class MessageEncryptionTestCase(APITestCase):
 
     def setUp(self):
         self.user1 = User.objects.create_user(

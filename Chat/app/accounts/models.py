@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
-from django.db import models  # noqa F401
+from django.db import models
+from django.core.exceptions import ValidationError 
 from app.messaging.utils.crypto import decrypt_message, encrypt_message
 from django.utils import timezone
+
 
 
 class Message(models.Model):
@@ -15,15 +17,20 @@ class Message(models.Model):
     is_expired = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        creating = self.pk is None 
-        super().save(*args, **kwargs)
+        creating = self.pk is None
 
-        if creating and self.ttl_seconds and not self.expired_at:
-            self.expired_at = self.created_at + timezone.timedelta(
+        if self.ttl_seconds is not None and self.ttl_seconds < 0:
+            raise ValidationError("TTL não pode ser negativo")
+
+        if creating and self.content:
+            self.content = encrypt_message(self.content)
+
+        if creating and self.ttl_seconds and not self.expires_at:
+            self.expires_at = timezone.now() + timezone.timedelta(
                 seconds=self.ttl_seconds
             )
-            
-            super().save(update_fields=["expired_at"])
+        
+        super().save(*args, **kwargs)
 
 
     def decrypted_content(self):

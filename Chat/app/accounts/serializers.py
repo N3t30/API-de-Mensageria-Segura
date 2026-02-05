@@ -43,8 +43,16 @@ class MessageSerializer(serializers.ModelSerializer):
             "recipient",
             "content",
             "created_at",
+            "ttl_seconds",
         ]
         read_only_fields = ['sender', 'created_at']
+
+    def validate_ttl_seconds(self, value):
+        if value is not None and value < 0:
+            raise serializers.ValidationError(
+                "TTL deve ser maior ou igual a zero"
+            )
+        return value
 
 
 # Serializer básico, recebe dados de registro, valida tamananho da senha

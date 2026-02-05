@@ -4,7 +4,6 @@ import logging
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from urllib3 import requests 
 from django.db.models import Q
 from django_ratelimit.decorators import ratelimit
 from rest_framework import generics, status
