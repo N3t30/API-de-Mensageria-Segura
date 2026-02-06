@@ -15,4 +15,5 @@ urlpatterns = [
         name='token_refresh'
     ),
     path('api/auth/', include('app.accounts.urls')),
+    path('', include('app.messaging.urls')),
 ]

@@ -1,5 +1,8 @@
-from django.http import JsonResponse
+from django.shortcuts import render
 
+def login_page(request):
+    return render(request, "messaging/login.html")
 
-def index(request):
-    return JsonResponse({"status": "messaging ok"})
+def register_page(request):
+    return render(request, "messaging/register.html")
+

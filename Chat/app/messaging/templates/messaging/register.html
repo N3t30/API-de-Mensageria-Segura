@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'messaging/css/auth.css' %}">
+</head>
+<body>
+
+<div class="auth-container">
+    <h1>Criar conta</h1>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Usuário" required>
+        <input type="password" name="password" placeholder="Senha" required>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <div class="link">
+        Já tem uma conta?
+        <a href="{% url 'login' %}">Faça login</a>
+    </div>
+</div>
+
+</body>
+</html>

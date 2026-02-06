@@ -14,7 +14,7 @@ def expire_messages():
         for message in messages:
             message.is_expired = True
             message.save(update_fields=["is_expired"])
-
+    
             MessageEvent.objects.create(
                 message=message,
                 event_type="MESSAGE_EXPIRED"
