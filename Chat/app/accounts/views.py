@@ -31,6 +31,17 @@ class LoginView(APIView):
             logger.warning(
                 f"Falha de login | IP: {request.META.get('REMOTE_ADDR')} | user: {request.data.get('username')}"  # noqa E501
             )
+            return Response(
+                {"error": "Credenciais inválidas"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        refresh = RefreshToken.for_user(user)
+       
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_200_OK)
 
 # Responsável por registrar novos usuários no sistema
 class RegisterView(generics.CreateAPIView):
