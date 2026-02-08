@@ -129,6 +129,21 @@ class SendMessageView(APIView):
             ttl_seconds=request.data["ttl_seconds"]
         )
         return Response(status=201)
+    
+# views para listar usuarios disponíveis para chat, exceto o próprio usuário autenticado
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = User.objects.exclude(id=request.user.id)
+        data = [
+            {
+                "id": user.id,
+                "username": user.username
+            }
+            for user in users
+        ]
+        return Response(data)
 
 
 
