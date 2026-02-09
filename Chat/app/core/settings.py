@@ -172,6 +172,12 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/chat/"
+LOGOUT_REDIRECT_URL = "/login/"
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 

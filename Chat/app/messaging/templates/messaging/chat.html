@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'messaging/css/chat.css' %}">
+</head>
+<body>
+
+    
+<div class="wrapper">
+
+    <div class="panel users">
+        <h3>Usuários</h3>
+        <div id="user-list"></div>
+    </div>
+
+    <div class="panel chat hidden" id="chat">
+        <div class="chat-header" id="chat-header"></div>
+
+        <div class="chat-messages" id="messages"></div>
+
+        <form id="chat-form">
+            <input id="message-input" placeholder="Mensagem" autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    const ACCESS_TOKEN = "{{ token }}";
+    const API_BASE = "http://localhost:8000";
+</script>
+
+<script src="{% static 'messaging/js/chat.js' %}"></script>
+</body>
+</html>

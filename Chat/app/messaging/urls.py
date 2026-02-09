@@ -5,6 +5,6 @@ urlpatterns = [
     path("login/", login_page, name="login-page"),
     path("register/", register_page, name="register-page"),
     path("password-reset/", login_page, name="password_reset"),
-    path("chat/", chat_page, name="chat-page"),
+    path("chat/", chat_page, name="chat"),
 
 ]

@@ -27,9 +27,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.CharField(source="sender.username", read_only=True)
-    recipient = serializers.CharField(source="recipient.username", read_only=True)
+    recipient_username = serializers.CharField(source="recipient.username", read_only=True)
 
-    # Aaqui somente para escrita, recebe ID
     recipient = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         write_only=True
@@ -40,7 +39,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "sender",
-            "recipient",
+            "recipient_username",
             "content",
             "created_at",
             "ttl_seconds",

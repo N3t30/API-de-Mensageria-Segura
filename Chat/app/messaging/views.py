@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 def login_page(request):
     if request.method == "POST":
@@ -18,14 +19,14 @@ def login_page(request):
                 "messaging/login.html",
                 {"error": "Credenciais inválidas"}
             )
-        
+
         login(request, user)
 
         refresh = RefreshToken.for_user(user)
         request.session["access"] = str(refresh.access_token)
         request.session["refresh"] = str(refresh)
 
-        return redirect("chat-page")
+        return redirect("chat")
 
     return render(request, "messaging/login.html")
 
@@ -48,12 +49,14 @@ def register_page(request):
 
     return render(request, "messaging/register.html")
 
-def chat_page(request):
-    accsse_token = request.session.get("access")
 
-    if not accsse_token:
+@login_required(login_url="/login/")
+def chat_page(request):
+    access_token = request.session.get("access")
+
+    if not access_token:
         return redirect("login-page")
-    
+
     return render(request, "messaging/chat.html", {
-        "token": request.session.get("access")
+        "token": access_token
     })
