@@ -101,3 +101,24 @@ body {
     color: white;
     cursor: pointer;
 }
+
+.username-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#user-status {
+    font-size: 18px;
+}
+
+.button-logout {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #ef4444;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+

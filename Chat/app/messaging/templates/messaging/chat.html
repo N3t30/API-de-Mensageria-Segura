@@ -2,29 +2,47 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Chat</title>
+    <title>Mensagens</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'messaging/css/chat.css' %}">
 </head>
 <body>
 
-    
 <div class="wrapper">
 
-    <div class="panel users">
-        <h3>Usuários</h3>
-        <div id="user-list"></div>
-    </div>
-
-    <div class="panel chat hidden" id="chat">
-        <div class="chat-header" id="chat-header"></div>
-
-        <div class="chat-messages" id="messages"></div>
+    <div class="panel chat">
+        <div class="chat-header">
+            <h3>Nova mensagem</h3>
+        </div>
 
         <form id="chat-form">
-            <input id="message-input" placeholder="Mensagem" autocomplete="off">
-            <button type="submit">➤</button>
+
+            <div class="username-field">
+                <input
+                    id="recipient-input"
+                    placeholder="Para (username)"
+                    autocomplete="off"
+                    required
+                >
+                <span id="user-status"></span>
+            </div>
+
+            <textarea
+                id="message-input"
+                placeholder="Digite sua mensagem"
+                required
+            ></textarea>
+
+            <button type="submit">Enviar</button>
+            <br>
+
+            <a class="button-logout"href="{% url 'logout' %}">Sair</a>
         </form>
+
+        <hr>
+
+        <h3>Caixa de entrada</h3>
+        <div class="chat-messages" id="messages"></div>
     </div>
 
 </div>

@@ -27,31 +27,22 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.CharField(source="sender.username", read_only=True)
-    recipient_username = serializers.CharField(source="recipient.username", read_only=True)
-
-    recipient = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(),
-        write_only=True
-    )
+    recipient = serializers.CharField(source="recipient.username", read_only=True)
+    content = serializers.SerializerMethodField()
 
     class Meta:
         model = Message
         fields = [
             "id",
             "sender",
-            "recipient_username",
+            "recipient",
             "content",
             "created_at",
             "ttl_seconds",
+            "is_expired",
         ]
-        read_only_fields = ['sender', 'created_at']
-
-    def validate_ttl_seconds(self, value):
-        if value is not None and value < 0:
-            raise serializers.ValidationError(
-                "TTL deve ser maior ou igual a zero"
-            )
-        return value
+    def get_content(self, obj):
+        return obj.decrypted_content()
 
 
 # Serializer básico, recebe dados de registro, valida tamananho da senha

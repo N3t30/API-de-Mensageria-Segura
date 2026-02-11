@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 def login_page(request):
@@ -60,3 +61,8 @@ def chat_page(request):
     return render(request, "messaging/chat.html", {
         "token": access_token
     })
+
+def logout_view(request):
+    logout(request)
+    request.session.flush()
+    return redirect("login-page")

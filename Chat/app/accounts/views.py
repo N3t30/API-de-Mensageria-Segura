@@ -1,4 +1,6 @@
-from datetime import timezone
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.utils import timezone
 import logging
 
 
@@ -65,8 +67,9 @@ class MessageListView(APIView):
 
     def get(self, request):
         base_filter  = Message.objects.filter(
-                is_expired=False,
-                expires_at__gt=timezone.now()
+                is_expired=False
+                ).filter(
+                    Q(expires_at_isnull=True) | Q(expires_at__gt=timezone())
                 )
         
         if request.user.is_staff:
@@ -122,28 +125,47 @@ class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        Message.objects.create(
+            username = request.data.get("username")
+            content = request.data.get("content")
+            ttl_seconds = request.data.get("ttl_seconds")
+        
+            if not username or not content:
+                return Response(
+                    {"error": "username e content são obrigatórios"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            try: 
+                recipient = User.objects.get(username=username)
+            except User.DoesNotExist:
+                return Response(
+                    {"error": "Usuário destinatário não encontrado"},
+                    status=status.HTTP_404_NOT_FOUND
+            )
+            
+            Message.objects.create(
             sender=request.user,
-            recipient_id=request.data["recipient"],
-            content=request.data["content"],
-            ttl_seconds=request.data["ttl_seconds"]
-        )
-        return Response(status=201)
-    
-# views para listar usuarios disponíveis para chat, exceto o próprio usuário autenticado
-class UserListView(APIView):
-    permission_classes = [IsAuthenticated]
+            recipient=recipient,
+            content=content,
+            ttl_seconds=ttl_seconds
+            )      
 
-    def get(self, request):
-        users = User.objects.exclude(id=request.user.id)
-        data = [
-            {
-                "id": user.id,
-                "username": user.username
-            }
-            for user in users
-        ]
-        return Response(data)
+            AuditLog.objects.create(
+            user=request.user,
+            action="SEND_MESSAGE",
+            target=f"user:{recipient.username}"
 
+            )
 
+            return Response(
+            {"detail": "Mensagem enviada com sucesso"},
+            status=status.HTTP_201_CREATED
+            )
+
+def check_username(request):
+    username = request.GET.get("username")
+
+    exists = User.objects.filter(username=username).exists()
+
+    return JsonResponse({"exists": exists})
 
