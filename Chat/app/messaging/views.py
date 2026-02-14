@@ -51,7 +51,7 @@ def register_page(request):
     return render(request, "messaging/register.html")
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/login-page/")
 def chat_page(request):
     access_token = request.session.get("access")
 

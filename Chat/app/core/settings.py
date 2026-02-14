@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'web'] 
 
 
 # Application definition
@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "app.accounts",
     "app.messaging",
     'axes',
+
+    "channels",
 ]
 
 
@@ -104,7 +106,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)]
+            "hosts": [("redis", 6379)] if DEBUG else [("redis", 6379)],
         },
     },
 }
@@ -116,8 +118,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
@@ -164,12 +168,20 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": "security.log",
         },
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
     },
     "loggers": {
         "django.security": {
             "handlers": ["file"],
             "level": "WARNING",
             "propagate": True,
+        },
+        "app.messaging": {
+            "handlers": ["console"],
+            "level": "INFO",
         },
     },
 }
@@ -203,3 +215,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Sobe mais um nível
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'messaging', 'static'),
+]
+
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("text/css", ".css", True)
+    mimetypes.add_type("text/javascript", ".js", True)

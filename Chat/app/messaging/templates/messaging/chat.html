@@ -9,14 +9,12 @@
 <body>
 
 <div class="wrapper">
-
     <div class="panel chat">
         <div class="chat-header">
             <h3>Nova mensagem</h3>
         </div>
 
         <form id="chat-form">
-
             <div class="username-field">
                 <input
                     id="recipient-input"
@@ -35,21 +33,19 @@
 
             <button type="submit">Enviar</button>
             <br>
-
-            <a class="button-logout"href="{% url 'logout' %}">Sair</a>
+            <a class="button-logout" href="{% url 'logout' %}">Sair</a>
         </form>
 
         <hr>
-
         <h3>Caixa de entrada</h3>
         <div class="chat-messages" id="messages"></div>
     </div>
-
 </div>
 
 <script>
     const ACCESS_TOKEN = "{{ token }}";
-    const API_BASE = "http://localhost:8000";
+    const API_BASE = "http://" + window.location.host;
+    console.log("Token carregado:", ACCESS_TOKEN ? "OK" : "ERRO");
 </script>
 
 <script src="{% static 'messaging/js/chat.js' %}"></script>
