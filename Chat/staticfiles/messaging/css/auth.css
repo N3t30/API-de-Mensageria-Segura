@@ -46,6 +46,7 @@ body {
     cursor: pointer;
 }
 
+
 .auth-container button:hover {
     background: #1d4ed8;
 }

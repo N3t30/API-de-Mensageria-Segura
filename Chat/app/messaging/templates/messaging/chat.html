@@ -2,52 +2,38 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Mensagens</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'messaging/css/chat.css' %}">
 </head>
 <body>
 
 <div class="wrapper">
-    <div class="panel chat">
-        <div class="chat-header">
-            <h3>Nova mensagem</h3>
+    <div class="chat-header">
+        <div class="user-info">
+            <h3>Mensagens</h3>
+            <span id="user-status"></span>
         </div>
+        <a class="button-logout" href="{% url 'logout' %}">Sair</a>
+    </div>
 
+    <div class="chat-messages" id="messages"></div>
+
+    <div class="chat-footer">
+        <input id="recipient-input" placeholder="Para: (username)" autocomplete="off">
         <form id="chat-form">
-            <div class="username-field">
-                <input
-                    id="recipient-input"
-                    placeholder="Para (username)"
-                    autocomplete="off"
-                    required
-                >
-                <span id="user-status"></span>
-            </div>
-
-            <textarea
-                id="message-input"
-                placeholder="Digite sua mensagem"
-                required
-            ></textarea>
-
+            <textarea id="message-input" placeholder="Digite sua mensagem" required></textarea>
             <button type="submit">Enviar</button>
-            <br>
-            <a class="button-logout" href="{% url 'logout' %}">Sair</a>
         </form>
-
-        <hr>
-        <h3>Caixa de entrada</h3>
-        <div class="chat-messages" id="messages"></div>
     </div>
 </div>
 
 <script>
     const ACCESS_TOKEN = "{{ token }}";
     const API_BASE = "http://" + window.location.host;
-    console.log("Token carregado:", ACCESS_TOKEN ? "OK" : "ERRO");
+    const CURRENT_USER = "{{ request.user.username }}";
 </script>
-
 <script src="{% static 'messaging/js/chat.js' %}"></script>
 </body>
 </html>

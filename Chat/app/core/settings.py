@@ -216,14 +216,12 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Sobe mais um nível
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/app/staticfiles'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'messaging', 'static'),
-]
+STATICFILES_DIRS = []
 
 if DEBUG:
     import mimetypes
