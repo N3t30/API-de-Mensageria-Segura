@@ -6,14 +6,22 @@ from django.utils import timezone
 
 
 class Message(models.Model):
+    Conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name="messages"
+    )
+
     sender = models.ForeignKey(
-        User, related_name="sent_messages", on_delete=models.CASCADE
+        User,
+        related_name="sent_message",
+        on_delete=models.CASCADE
     )
-    recipient = models.ForeignKey(
-        User, related_name="received_messages", on_delete=models.CASCADE
-    )
+
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    is_read = models.BooleanField(default=False)
 
     ttl_seconds = models.PositiveIntegerField(null=True, blank=True)
     expires_at = models.DateTimeField(null=True, blank=True)
@@ -58,3 +66,11 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.action} - {self.timestamp}"
+
+
+class Conversation(models.Model):
+    participants = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return " - ".join([u.username for u in self.participants.all()])
