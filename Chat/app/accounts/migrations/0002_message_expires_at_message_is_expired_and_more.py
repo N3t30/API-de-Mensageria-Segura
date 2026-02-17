@@ -7,32 +7,47 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='message',
-            name='expires_at',
+            model_name="message",
+            name="expires_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='message',
-            name='is_expired',
+            model_name="message",
+            name="is_expired",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='message',
-            name='ttl_seconds',
+            model_name="message",
+            name="ttl_seconds",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.CreateModel(
-            name='MessageEvent',
+            name="MessageEvent",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('event_type', models.CharField(max_length=50)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('message', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='accounts.message')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("event_type", models.CharField(max_length=50)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "message",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="events",
+                        to="accounts.message",
+                    ),
+                ),
             ],
         ),
     ]

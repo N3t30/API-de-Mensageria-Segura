@@ -1,0 +1,7 @@
+{
+    "workbench.colorTheme": "Dark Modern",
+    "python.linting.enabled": false,
+    "python.linting.flake8Enabled": false,
+    "editor.fontSize": 14,
+    "files.autoSave": "afterDelay"
+}

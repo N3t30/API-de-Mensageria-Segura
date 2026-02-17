@@ -27,7 +27,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.CharField(source="sender.username", read_only=True)
-    recipient = serializers.CharField(source="recipient.username", read_only=True)
+    recipient = serializers.CharField(
+        source="recipient.username", read_only=True)
     content = serializers.SerializerMethodField()
 
     class Meta:
@@ -41,6 +42,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "ttl_seconds",
             "is_expired",
         ]
+
     def get_content(self, obj):
         return obj.decrypted_content()
 

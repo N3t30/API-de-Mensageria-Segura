@@ -1,12 +1,14 @@
+import logging
 from urllib.parse import parse_qs
+
+from asgiref.sync import sync_to_async
 from channels.middleware import BaseMiddleware
 from django.contrib.auth.models import AnonymousUser
-from asgiref.sync import sync_to_async
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 class JWTAuthMiddleware(BaseMiddleware):
     def __init__(self, inner):

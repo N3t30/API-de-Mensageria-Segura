@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db.models import Max
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -10,24 +9,16 @@ from ..models import AuditLog, Message
 class TestHTTPStatus(APITestCase):
 
     def setUp(self):
-        self.user_a = User.objects.create_user(
-            username="user_a", password="12345678"
-        )
-        self.user_b = User.objects.create_user(
-            username="user_b", password="12345678"
-        )
-        self.user_c = User.objects.create_user(
-            username="user_c", password="12345678"
-        )
+        self.user_a = User.objects.create_user(username="user_a", password="12345678")
+        self.user_b = User.objects.create_user(username="user_b", password="12345678")
+        self.user_c = User.objects.create_user(username="user_c", password="12345678")
 
         self.admin = User.objects.create_user(
             username="admin", password="12345678", is_staff=True
         )
 
         self.message = Message.objects.create(
-            sender=self.user_a,
-            recipient=self.user_b,
-            content="mensagem secreta"
+            sender=self.user_a, recipient=self.user_b, content="mensagem secreta"
         )
 
     def test_create_message_return_201(self):
@@ -35,11 +26,8 @@ class TestHTTPStatus(APITestCase):
 
         response = self.client.post(
             "/api/auth/messages/",
-            {
-                "recipient": self.user_b.id,
-                "content": "Olá"
-            },
-            format="json"
+            {"recipient": self.user_b.id, "content": "Olá"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -48,11 +36,7 @@ class TestHTTPStatus(APITestCase):
         self.client.force_authenticate(user=self.user_a)
 
         response = self.client.post(
-            "/api/auth/messages/",
-            {
-                'content': "Para niguém"
-            },
-            format="json"
+            "/api/auth/messages/", {"content": "Para niguém"}, format="json"
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -79,14 +63,14 @@ class TestHTTPStatus(APITestCase):
             AuditLog.objects.filter(
                 user=self.user_c,
                 action="UNAUTHORIZED_ACCESS",
-                target=f"message:{self.message.id}"
+                target=f"message:{self.message.id}",
             ).exists()
         )
 
     def test_get_nonexistent_message_returns_404(self):
         self.client.force_authenticate(user=self.user_a)
 
-        max_id = Message.objects.aggregate(max_id=Max('id'))['max_id']
+        max_id = Message.objects.aggregate(max_id=Max("id"))["max_id"]
         nonexistent_id = (max_id or 0) + 1
 
         response = self.client.get(f"/api/auth/messages/{nonexistent_id}/")
@@ -99,4 +83,3 @@ class TestHTTPStatus(APITestCase):
         response = self.client.get(f"/api/auth/messages/{self.message.id}/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-

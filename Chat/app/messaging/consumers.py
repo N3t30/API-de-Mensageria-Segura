@@ -1,8 +1,11 @@
 import json
+
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser, User
-from asgiref.sync import sync_to_async
+
 from app.accounts.models import Message
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -13,23 +16,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print("Usuário não autenticado, fechando conexão")
             await self.close()
             return
-        
+
         await self.accept()
         print(f"Usuário {self.user.username} conectado")
 
         self.group_name = f"user_{self.user.id}"
 
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
 
     async def disconnect(self, close_code):
         if hasattr(self, "group_name"):
-            await self.channel_layer.group_discard(
-                self.group_name,
-                self.channel_name
-            )
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
         print(f"Usuário {getattr(self, 'user', 'Unknown')} desconectado")
 
     async def receive(self, text_data):
@@ -54,21 +51,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "message": content,
         }
 
-        await self.channel_layer.group_send(
-            f"user_{recipient.id}",
-            payload
-        )
+        await self.channel_layer.group_send(f"user_{recipient.id}", payload)
 
-        await self.channel_layer.group_send(
-            f"user_{self.user.id}",
-            payload
-        )
+        await self.channel_layer.group_send(f"user_{self.user.id}", payload)
 
     async def chat_message(self, event):
-        await self.send(text_data=json.dumps({
-            "sender": event["sender"],
-            "message": event["message"]
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {"sender": event["sender"], "message": event["message"]}
+            )
+        )
 
     @sync_to_async
     def get_user(self, username):
@@ -80,7 +72,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_message(self, sender, recipient, content):
         return Message.objects.create(
-            sender=sender,
-            recipient=recipient,
-            content=content
+            sender=sender, recipient=recipient, content=content
         )

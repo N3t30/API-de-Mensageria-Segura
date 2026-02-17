@@ -1,14 +1,17 @@
-from django.contrib.auth.models import User
-from django.db import models
-from django.core.exceptions import ValidationError 
 from app.messaging.utils.crypto import decrypt_message, encrypt_message
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.utils import timezone
 
 
-
 class Message(models.Model):
-    sender = models.ForeignKey(User, related_name="sent_messages", on_delete=models.CASCADE)
-    recipient = models.ForeignKey(User, related_name="received_messages", on_delete=models.CASCADE)
+    sender = models.ForeignKey(
+        User, related_name="sent_messages", on_delete=models.CASCADE
+    )
+    recipient = models.ForeignKey(
+        User, related_name="received_messages", on_delete=models.CASCADE
+    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -29,13 +32,13 @@ class Message(models.Model):
             self.expires_at = timezone.now() + timezone.timedelta(
                 seconds=self.ttl_seconds
             )
-        
-        super().save(*args, **kwargs)
 
+        super().save(*args, **kwargs)
 
     def decrypted_content(self):
         return decrypt_message(self.content)
-    
+
+
 class MessageEvent(models.Model):
     message = models.ForeignKey(
         Message, on_delete=models.CASCADE, related_name="events"
