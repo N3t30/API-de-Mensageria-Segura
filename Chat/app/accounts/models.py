@@ -4,22 +4,17 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+class Conversation(models.Model):
+    participants = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
 
 class Message(models.Model):
-    Conversation = models.ForeignKey(
-        Conversation,
-        on_delete=models.CASCADE,
-        related_name="messages"
-    )
-
-    sender = models.ForeignKey(
-        User,
-        related_name="sent_message",
-        on_delete=models.CASCADE
-    )
-
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
 
     is_read = models.BooleanField(default=False)
 
