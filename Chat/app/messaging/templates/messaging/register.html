@@ -2,9 +2,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Registro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Mensageria Premium</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'messaging/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'messaging/css/auth.css' %}?v=3">
 </head>
 <body>
 
@@ -15,10 +16,10 @@
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    <form method="post" onsubmit="disableButton()">
+    <form method="post" id="registerForm">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Usuário" required>
-        <input type="password" name="password" placeholder="Senha" required>
+        <input type="text" name="username" placeholder="Escolha um usuário" required autocomplete="off">
+        <input type="password" name="password" placeholder="Crie uma senha forte" required autocomplete="new-password">
         <button type="submit" id="submitbtn">Registrar</button>
     </form>
 
@@ -28,6 +29,14 @@
     </div>
 
 </div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitbtn');
+        btn.disabled = true;
+        btn.innerHTML = 'Criando...';
+    });
+</script>
 
 </body>
 </html>

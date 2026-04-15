@@ -1,75 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    /* Mesh gradient moderno e elegante */
+    background: radial-gradient(circle at 15% 50%, rgba(76, 201, 240, 0.15), transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(114, 9, 183, 0.15), transparent 50%),
+                #0f172a; /* Fundo Slate 900 */
     height: 100vh;
-    background: linear-gradient(135deg, #0f172a, #020617);
     display: flex;
-    align-items: center;
     justify-content: center;
-    color: #fff;
+    align-items: center;
+    color: #f8fafc;
 }
 
 .auth-container {
-    background: #020617;
-    padding: 40px;
-    border-radius: 10px;
-    width: 350px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 50px 40px;
+    width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.auth-container h1 {
-    text-align: center;
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+h1 {
     margin-bottom: 30px;
-}
-
-.auth-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-}
-
-.auth-container button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-
-.auth-container button:hover {
-    background: #1d4ed8;
-}
-
-.auth-container .link {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-}
-
-.auth-container a {
-    color: #3b82f6;
-    text-decoration: none;
-}
-
-.auth-container a:hover {
-    text-decoration: underline;
+    font-weight: 700;
+    font-size: 28px;
+    background: linear-gradient(135deg, #4cc9f0, #7209b7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
 }
 
 .error {
-    background: #7f1d1d;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    text-align: center;
+    background: rgba(244, 63, 94, 0.1);
+    color: #f43f5e;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+input {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 20px;
+    border-radius: 16px;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: #64748b;
+    font-weight: 400;
+}
+
+input:focus {
+    border-color: #4cc9f0;
+    box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.1);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+button {
+    background: linear-gradient(135deg, #4cc9f0, #4361ee);
+    border: none;
+    padding: 16px;
+    border-radius: 16px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 20px -10px rgba(67, 97, 238, 0.5);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px -10px rgba(67, 97, 238, 0.6);
+}
+
+button:disabled {
+    background: #334155;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.link {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.link a {
+    color: #4cc9f0;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s, text-shadow 0.3s;
+    margin-left: 6px;
+}
+
+.link a:hover {
+    color: #8ce1fa;
+    text-shadow: 0 0 8px rgba(76, 201, 240, 0.4);
 }

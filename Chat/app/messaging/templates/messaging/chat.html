@@ -3,37 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Mensageria Premium</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'messaging/css/chat.css' %}">
+    <link rel="stylesheet" href="{% static 'messaging/css/chat.css' %}?v=3">
 </head>
 <body>
 
 <div class="wrapper">
-    <div class="chat-header">
-        <div class="user-info">
-            <h3>Mensagens</h3>
-            <span id="user-status"></span>
+    <!-- SIDEBAR DE CONTATOS -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="user-profile">
+                <div class="avatar">{{ request.user.username|make_list|first|upper }}</div>
+                <span>{{ request.user.username }}</span>
+            </div>
+            <a class="button-logout" href="{% url 'logout' %}" title="Sair do sistema">Sair</a>
         </div>
-        <a class="button-logout" href="{% url 'logout' %}">Sair</a>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="new-contact-input" placeholder="Pesquisar usuário para iniciar conversa..." autocomplete="off">
+            </div>
+            <div id="user-status-indicator" style="font-size: 11px; text-align: center; margin-top: 5px;"></div>
+        </div>
+
+        <div class="contacts-list" id="contact-list">
+            <!-- Os contatos serão renderizados pelo Javascript -->
+        </div>
     </div>
 
-    <div class="chat-messages" id="messages"></div>
+    <!-- ÁREA DE CHAT PRINCIPAL -->
+    <div class="chat-area" id="chat-area-main" style="display: none;">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="avatar" id="current-contact-avatar"></div>
+                <div class="chat-header-name" id="current-contact-name"></div>
+            </div>
+        </div>
 
-    <div class="chat-footer">
-        <input id="recipient-input" placeholder="Para: (username)" autocomplete="off">
-        <form id="chat-form">
-            <textarea id="message-input" placeholder="Digite sua mensagem" required></textarea>
-            <button type="submit">Enviar</button>
-        </form>
+        <div class="chat-messages" id="messages">
+            <!-- Mensagens renderizadas dinamicamente pelo JS -->
+        </div>
+
+        <div class="chat-footer">
+            <form id="chat-form">
+                <textarea id="message-input" placeholder="Digite sua mensagem secreta..." required></textarea>
+                <button type="submit" title="Enviar Mensagem">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
     </div>
+
+    <!-- ESTADO VAZIO -->
+    <div class="chat-area" id="empty-state-view">
+        <div class="empty-state">
+            Selecione uma conversa ou pesquise um usuário para começar.
+        </div>
+    </div>
+
 </div>
 
 <script>
     const ACCESS_TOKEN = "{{ token }}";
-    const API_BASE = "http://" + window.location.host;
+    const API_BASE = window.location.protocol + "//" + window.location.host;
     const CURRENT_USER = "{{ request.user.username }}";
 </script>
-<script src="{% static 'messaging/js/chat.js' %}"></script>
+<script src="{% static 'messaging/js/chat.js' %}?v=3"></script>
 </body>
 </html>

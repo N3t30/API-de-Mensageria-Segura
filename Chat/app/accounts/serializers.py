@@ -38,7 +38,7 @@ class MessageSerializer(serializers.ModelSerializer):
             "sender",
             "recipient",
             "content",
-            "created_at",
+            "timestamp",
             "ttl_seconds",
             "is_expired",
         ]

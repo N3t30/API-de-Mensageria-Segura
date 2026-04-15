@@ -66,7 +66,7 @@ class MessageListView(APIView):
 
     def get(self, request):
         base_filter = Message.objects.filter(is_expired=False).filter(
-            Q(expires_at_isnull=True) | Q(expires_at__gt=timezone.now())
+            Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now())
         )
 
         if request.user.is_staff:

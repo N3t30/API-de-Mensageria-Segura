@@ -10,12 +10,11 @@ class Conversation(models.Model):
     
 
 class Message(models.Model):
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, null=True, blank=True)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
-
     is_read = models.BooleanField(default=False)
 
     ttl_seconds = models.PositiveIntegerField(null=True, blank=True)
@@ -62,10 +61,3 @@ class AuditLog(models.Model):
     def __str__(self):
         return f"{self.user} - {self.action} - {self.timestamp}"
 
-
-class Conversation(models.Model):
-    participants = models.ManyToManyField(User)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return " - ".join([u.username for u in self.participants.all()])

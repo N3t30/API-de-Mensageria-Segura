@@ -2,24 +2,25 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mensageria Premium</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'messaging/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'messaging/css/auth.css' %}?v=3">
 </head>
 <body>
 
 <div class="auth-container">
-    <h1>Login</h1>
+    <h1>Bem-vindo de volta</h1>
 
     {% if error %}
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    <form method="post" onsubmit="disableButton()">
+    <form method="post" id="loginForm">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Usuário" required>
-        <input type="password" name="password" placeholder="Senha" required>
-        <button type="submit" id="submitbtn">Entrar</button>
+        <input type="text" name="username" placeholder="Nome de usuário" required autocomplete="username">
+        <input type="password" name="password" placeholder="Senha secreta" required autocomplete="current-password">
+        <button type="submit" id="submitbtn">Acessar Chat</button>
     </form>
 
     <div class="link">
@@ -31,6 +32,14 @@
         <a href="{% url 'password_reset' %}">Esqueceu sua senha?</a>
     </div>
 </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitbtn');
+        btn.disabled = true;
+        btn.innerHTML = 'Conectando...';
+    });
+</script>
 
 </body>
 </html>
